@@ -8,23 +8,23 @@ export default function Page() {
           </div>
           <div class="flex space-x-6">
             <a href="#" class="hover:text-white">Inicio</a>
-            <a href="/pagina1" class="hover:text-white">Carrito</a>
-            <a href="/pagina2" class="hover:text-white">Productos</a>
+            <a href="#" class="hover:text-white">Carrito</a>
+            <a href="#" class="hover:text-white">Productos</a>
           </div>
         </div>
         
       </header>
       <div>
-          00 linea  
+          190 linea  
       </div>
       <div>
-          34 linea 
+          09 linea 
       </div>
       <div>
-          65 linea 
+          78 linea 
       </div>
       <div>
-          243 linea 
+          22 linea 
       </div>
       <body class="flex flex-col min-h-screen">
         <footer class="bg-gray-800 text-white p-6 mt-auto">
