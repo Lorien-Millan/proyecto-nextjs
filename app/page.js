@@ -15,6 +15,7 @@ export default function Home() {
               <a href="#" className="hover:text-white">Inicio</a>
               <a href="/pagina1" className="hover:text-white">Carrito</a>
               <a href="/pagina2" className="hover:text-white">Productos</a>
+              <a href="/api/InicioSesion" className="hover:text-white">Inicio de sesión</a>
             </div>
           </div>
         
