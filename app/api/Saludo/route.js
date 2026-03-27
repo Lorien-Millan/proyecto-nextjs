@@ -19,10 +19,8 @@ export async function GET(request) {
 // POST request
 export async function POST(request) {
   try {
-    // Leer el JSON del body
     const body = await request.json();
     
-    // Ejemplo: validar credenciales
     const { usuario, password } = body;
     
     if (!usuario || !password) {
@@ -31,10 +29,7 @@ export async function POST(request) {
         error: "Faltan credenciales" 
       }, { status: 400 });
     }
-    
-    // Aquí iría tu lógica de autenticación
-    // Por ahora simulamos un login exitoso
-    
+
     return Response.json({ 
       mensaje: "hola",
       token: "token-ejemplo-123",
