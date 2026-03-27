@@ -10,7 +10,6 @@ export default function Page() {
             <a href="#" className="hover:text-white">Inicio</a>
             <a href="#" className="hover:text-white">Carrito</a>
             <a href="#" className="hover:text-white">Productos</a>
-            <a href="#" className="hover:text-white">Iniciar sesión</a>
           </div>
         </div>
         
