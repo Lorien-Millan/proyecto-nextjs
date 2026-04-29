@@ -10,8 +10,8 @@ export default function Home() {
           
             <div className="flex space-x-6">
               <a href="#" className="hover:text-white">Inicio</a>
-              <a href="/pagina1" className="hover:text-white">hola</a>
-              <a href="/pagina2" className="hover:text-white">Carrito</a>
+              <a href="/pagina1" className="hover:text-white">Carrito</a>
+              <a href="/pagina2" className="hover:text-white">Productos</a>
               <a href="/api/Saludo" className="hover:text-white">Saludo</a>
               <a href="/api/InicioSesion" className="hover:text-white">Iniciar sesión</a>
             </div>
