@@ -1,16 +1,23 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Orbitron, Bitcount_Prop_Single } from "next/font/google";
 import Link from 'next/link';
+import Image from 'next/image';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Fuente para títulos
+const orbitron = Orbitron({
+  variable: "--font-heading",
   subsets: ["latin"],
+  weight: ["500", "700", "900"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+// Fuente para cuerpo/texto normal
+const bitcount_Prop_Single = Bitcount_Prop_Single({
+  variable: "--font-body",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -20,25 +27,43 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly) {
   return (
-
-
     <html lang="es">
-      <body className="font-sans antialiased">
+      <body className={`${orbitron.variable} ${bitcount_Prop_Single.variable} font-body text-white`}>
         {/* NAVBAR */}
-        <nav className="flex gap-4 p-4 bg-gray-100 border-b">
-          <Link href="/" className="font-bold">🏠 Inicio</Link>
-          <Link href="/categorias">📂 Categorías</Link>
-          <Link href="/carrito"> Carrito</Link>
-          <Link href="/inicioSesion">🔑 Login</Link>
-          <Link href="/registro"> Registro</Link>
+        <nav className={`font-heading font-bold flex items-center gap-6 bg-green-200 text-rosa-principal`}>
+          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition">
+            <Image 
+              src="/InicioLogo.png"
+              alt="NerfThis Logo"
+              width={353}
+              height={40}
+            />
+          </Link>
+          
+          <Link href="/categorias" className="hover:opacity-80 transition">
+            📂 Categorías
+          </Link>
+          
+          <Link href="/carrito" className="hover:opacity-80 transition">
+            🛒 Carrito
+          </Link>
+          
+          <Link href="/login" className="hover:opacity-80 transition">
+            🔑 Login
+          </Link>
+          
+          <Link href="/registro" className="hover:opacity-80 transition">
+            Registro
+          </Link>
         </nav>
+        <p className= "p-1 font-body bg-gray-100 text-gray-400 text-center">
+          "Videojuegos a precios RIDÍCULAMENTE bajos"
+        </p>
 
         {/* CONTENIDO DE CADA PÁGINA */}
-        <main className="p-4">
+        <main>
           {children}
         </main>
       </body>
