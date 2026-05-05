@@ -46,64 +46,100 @@ export default async function CategoriaDetallePage({
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="border-b pb-4">
-        <h1 className="text-3xl font-bold text-gray-900 capitalize">
+    <div className="min-h-screen bg-black text-white p-6 md:p-12">
+      
+      {/* 🏷️ Header de la Categoría */}
+      <div className="text-center mb-12">
+        <h1 className="text-4xl md:text-5xl font-bold font-heading text-pink-500 mb-4 capitalize">
           {categoria.nombre}
         </h1>
+        
         {categoria.descripcion && (
-          <p className="text-gray-600 mt-2">{categoria.descripcion}</p>
+          <p className="text-gray-400 max-w-2xl mx-auto font-body text-lg">
+            {categoria.descripcion}
+          </p>
         )}
-        <p className="text-sm text-gray-500 mt-1">
-          {juegos?.length || 0} juegos disponibles
-        </p>
+        
+        <div className="mt-6 inline-block bg-gray-900 px-4 py-2 rounded-full border border-gray-800">
+          <span className="text-sm text-gray-300 font-body">
+            {juegos?.length || 0} juegos disponibles
+          </span>
+        </div>
       </div>
 
-      {/* Juegos */}
+      {/* 🎮 Grid de Juegos */}
       {!juegos || juegos.length === 0 ? (
-        <div className="text-center py-12 bg-gray-50 rounded-lg">
-          <p className="text-gray-500 text-lg">
+        <div className="text-center py-20 bg-gray-900/50 rounded-2xl border border-gray-800 max-w-lg mx-auto">
+          <p className="text-gray-400 text-xl font-body mb-4">
             No hay juegos en esta categoría aún.
           </p>
           <Link 
             href="/categorias" 
-            className="text-blue-600 hover:underline mt-2 inline-block"
+            className="text-pink-500 hover:text-pink-400 font-semibold font-heading transition"
           >
             ← Volver a categorías
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {juegos.map((juego) => (
             <Link 
               key={juego.id_producto} 
               href={`/juegos/${juego.id_producto}`}
-              className="bg-white border rounded-lg p-4 hover:shadow-lg hover:border-blue-500 transition"
+              className="group block bg-gray-900 rounded-xl overflow-hidden border border-gray-800 hover:border-pink-500 hover:shadow-lg hover:shadow-pink-500/10 transition-all duration-300"
             >
-              {juego.url_imagen && (
-                <img 
-                  src={juego.url_imagen} 
-                  alt={juego.titulo}
-                  className="w-full h-48 object-cover rounded mb-3"
-                />
+              {/* Imagen del juego */}
+              {juego.url_imagen ? (
+                <div className="relative h-48 w-full overflow-hidden">
+                  <img 
+                    src={juego.url_imagen} 
+                    alt={juego.titulo}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent" />
+                </div>
+              ) : (
+                <div className="h-48 w-full bg-gray-800 flex items-center justify-center text-gray-600">
+                  <span className="text-4xl">🎮</span>
+                </div>
               )}
-              <h3 className="font-semibold text-gray-900">{juego.titulo}</h3>
-              {juego.plataforma && (
-                <p className="text-sm text-gray-500">🎮 {juego.plataforma}</p>
-              )}
-              <p className="text-lg font-bold text-green-600 mt-2">
-                {juego.precio} €
-              </p>
+
+              {/* Info del juego */}
+              <div className="p-5">
+                <h3 className="text-lg font-bold text-white font-heading mb-2 group-hover:text-pink-500 transition-colors">
+                  {juego.titulo}
+                </h3>
+
+                {juego.plataforma && (
+                  <span className="inline-block bg-gray-800 text-gray-300 text-xs px-2 py-1 rounded mb-3 font-body">
+                    {juego.plataforma}
+                  </span>
+                )}
+
+                <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-800">
+                  <span className="text-pink-500 text-xl font-bold font-heading">
+                    {juego.precio} €
+                  </span>
+                  <span className="text-gray-400 text-sm group-hover:translate-x-1 transition-transform">
+                    Ver más →
+                  </span>
+                </div>
+              </div>
             </Link>
           ))}
         </div>
       )}
 
-      {/* Volver */}
-      <Link href="/categorias" className="text-gray-600 hover:text-gray-900">
-        ← Volver a categorías
-      </Link>
+      {/* ⬅️ Botón Volver */}
+      <div className="mt-16 text-center">
+        <Link 
+          href="/categorias" 
+          className="inline-flex items-center gap-2 text-gray-400 hover:text-pink-500 font-body transition-colors"
+        >
+          ← Volver a categorías
+        </Link>
+      </div>
+      
     </div>
   )
 }
