@@ -46,11 +46,11 @@ export default async function CategoriaDetallePage({
   }
 
   return (
-    <div className="min-h-screen bg-black text-white p-6 md:p-12">
+    <div className="min-h-screen text-white p-6 md:p-12">
       
       {/* 🏷️ Header de la Categoría */}
       <div className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold font-heading text-pink-500 mb-4 capitalize">
+        <h1 className="text-4xl md:text-5xl font-bold font-heading text-rosa-principal mb-4 capitalize">
           {categoria.nombre}
         </h1>
         
@@ -60,16 +60,16 @@ export default async function CategoriaDetallePage({
           </p>
         )}
         
-        <div className="mt-6 inline-block bg-gray-900 px-4 py-2 rounded-full border border-gray-800">
-          <span className="text-sm text-gray-300 font-body">
-            {juegos?.length || 0} juegos disponibles
+        <div className="mt-6 inline-block bg-verde-principal px-4 py-2 rounded-full border border-gray-800">
+          <span className="text-1xl text-rosa-principal font-bold font-body">
+            {juegos?.length || 0} juego(s) disponibles
           </span>
         </div>
       </div>
 
       {/* 🎮 Grid de Juegos */}
       {!juegos || juegos.length === 0 ? (
-        <div className="text-center py-20 bg-gray-900/50 rounded-2xl border border-gray-800 max-w-lg mx-auto">
+        <div className="text-center py-20 bg-verde-principal rounded-2xl border border-gray-800 max-w-lg mx-auto">
           <p className="text-gray-400 text-xl font-body mb-4">
             No hay juegos en esta categoría aún.
           </p>
