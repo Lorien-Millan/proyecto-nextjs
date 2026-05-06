@@ -43,10 +43,6 @@ export default function RootLayout({
             />
           </Link>
           
-          <Link href="/categorias" className="hover:opacity-80 transition">
-            📂 Categorías
-          </Link>
-          
           <Link href="/carrito" className="hover:opacity-80 transition">
             🛒 Carrito
           </Link>
