@@ -1,6 +1,7 @@
 import { createServerClient } from '@/lib/supabase/server'
 import TopVentas from '@/components/TopVentas';
 import GridCategorias from '@/components/GridCategorias';
+import Link from 'next/link';
 
 export default async function Home() {
   const supabase = createServerClient();
@@ -62,11 +63,11 @@ export default async function Home() {
       {/* Hero Section con Top Ventas */}
       <section className="bg-gradient-to-r from-purple-900 to-blue-900 text-white py-16">
         <div className="container mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">
-            🎮 GameStore
+          <h1 className="text-4xl md:text-9xl font-heading text-center mb-4 p-7">
+            BIENVENIDO
           </h1>
           <p className="text-center text-xl text-gray-300 mb-12">
-            Los mejores videojuegos al mejor precio
+            Descubre los mejores videojuegos al mejor precio
           </p>
           
           <TopVentas productos={productosConVentas} />
@@ -79,6 +80,13 @@ export default async function Home() {
           Explora por Categorías
         </h2>
         <GridCategorias categorias={categorias || []} />
+      </section>
+
+      {/* Enlace a todos los juegos */}
+      <section className="container mx-auto px-4 py-8 text-center">
+        <Link href="/tienda/juegos" className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+          Ver todos los productos
+        </Link>
       </section>
     </main>
   );

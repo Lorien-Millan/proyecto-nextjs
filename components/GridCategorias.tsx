@@ -1,9 +1,12 @@
+import Image from 'next/image';
 import Link from 'next/link';
 
+// 1. Actualizamos la interfaz para incluir la imagen
 interface Categoria {
   id_categoria: number;
   nombre: string;
   descripcion: string | null;
+  imagen?: string; // Campo opcional por si alguna categoría no tiene imagen
 }
 
 interface GridCategoriasProps {
@@ -20,37 +23,42 @@ export default function GridCategorias({ categorias }: GridCategoriasProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {categorias.map((categoria) => (
         <Link
           href={`/shop?categoria=${categoria.id_categoria}`}
           key={categoria.id_categoria}
-          className="group"
+          className="group relative block h-64 overflow-hidden rounded-xl shadow-lg cursor-pointer"
         >
-          <div className="bg-white rounded-xl shadow-lg p-8 border-2 border-transparent transition-all duration-300 hover:border-purple-500 hover:shadow-2xl hover:-translate-y-1">
-            <div className="flex items-center gap-4">
-              {/* Icono de categoría */}
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-600 rounded-xl flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                🎮
-              </div>
-              
-              <div className="flex-1">
-                <h3 className="text-xl font-bold text-gray-800 group-hover:text-purple-600 transition-colors duration-300">
-                  {categoria.nombre}
-                </h3>
-                
-                {categoria.descripcion && (
-                  <p className="text-sm text-gray-500 mt-1 line-clamp-2">
-                    {categoria.descripcion}
-                  </p>
-                )}
-              </div>
+          {/* Contenedor de la Imagen */}
+          <div className="relative h-full w-full">
+            {categoria.imagen ? (
+              <Image
+                src={categoria.imagen}
+                alt={`Categoría ${categoria.nombre}`}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-110"
+              />
+            ) : (
+              // Fallback si no hay imagen (fondo gris)
+              <div className="h-full w-full bg-gray-200" />
+            )}
+            
+            {/* Capa oscura para mejorar legibilidad del texto (Overlay) */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+          </div>
 
-              {/* Flecha indicadora */}
-              <div className="text-gray-400 group-hover:text-purple-600 group-hover:translate-x-1 transition-all duration-300">
-                →
-              </div>
-            </div>
+          {/* Texto sobre la imagen */}
+          <div className="absolute bottom-0 left-0 right-0 p-6">
+            <h3 className="text-2xl font-bold text-white group-hover:text-purple-400 transition-colors duration-300">
+              {categoria.nombre}
+            </h3>
+            
+            {categoria.descripcion && (
+              <p className="text-gray-300 text-sm mt-2 line-clamp-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                {categoria.descripcion}
+              </p>
+            )}
           </div>
         </Link>
       ))}
