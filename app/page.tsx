@@ -1,9 +1,9 @@
-import { createClient } from '@/utils/supabase/server';
+import { createServerClient } from '@/lib/supabase/server'
 import TopVentas from '@/components/TopVentas';
 import GridCategorias from '@/components/GridCategorias';
 
 export default async function Home() {
-  const supabase = createClient();
+  const supabase = createServerClient();
 
   // Consulta para obtener los 3 productos más vendidos
   const { data: topVentas, error: errorTop } = await supabase
