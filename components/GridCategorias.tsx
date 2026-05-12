@@ -26,7 +26,7 @@ export default function GridCategorias({ categorias }: GridCategoriasProps) {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {categorias.map((categoria) => (
         <Link
-          href={`/shop?categoria=${categoria.id_categoria}`}
+          href={`/category/${categoria.id_categoria}`}
           key={categoria.id_categoria}
           className="group relative block h-64 overflow-hidden rounded-xl shadow-lg cursor-pointer"
         >

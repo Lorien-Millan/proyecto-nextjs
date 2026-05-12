@@ -1,6 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Orbitron, Bitcount_Prop_Single } from "next/font/google";
+import { Orbitron, Unbounded } from "next/font/google";
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -13,10 +13,10 @@ const orbitron = Orbitron({
 });
 
 // Fuente para cuerpo/texto normal
-const bitcount_Prop_Single = Bitcount_Prop_Single({
+const unbounded = Unbounded({
   variable: "--font-body",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "900"],
   display: "swap",
 });
 
@@ -30,7 +30,7 @@ export default function RootLayout({
 }: Readonly) {
   return (
     <html lang="es">
-      <body className={`${orbitron.variable} ${bitcount_Prop_Single.variable} font-body text-white`}>
+      <body className={`${orbitron.variable} ${unbounded.variable} font-body text-white`}>
         {/* NAVBAR */}
 
         <nav className={`font-heading font-bold flex items-center gap-6 bg-green-200 text-rosa-principal`}>
