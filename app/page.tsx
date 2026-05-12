@@ -15,7 +15,7 @@ export default async function Home() {
         id_producto,
         titulo,
         precio,
-        url_imagen,
+        imagen,
         stock,
         categoria:categoria (
           nombre

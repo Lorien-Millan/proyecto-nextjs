@@ -5,7 +5,7 @@ interface Producto {
   id_producto: number;
   titulo: string;
   precio: number;
-  url_imagen: string;
+  imagen: string;
   stock: number;
   ventas: number;
   categoria?: {
@@ -48,9 +48,9 @@ export default function TopVentas({ productos }: TopVentasProps) {
 
               {/* Imagen del producto */}
               <div className="relative h-64 bg-gray-800">
-                {producto.url_imagen ? (
+                {producto.imagen ? (
                   <Image
-                    src={producto.url_imagen}
+                    src={producto.imagen}
                     alt={producto.titulo}
                     fill
                     className="object-cover group-hover:scale-110 transition-transform duration-300"
