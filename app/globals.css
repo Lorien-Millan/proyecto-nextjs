@@ -1,22 +1,59 @@
 @import "tailwindcss";
 
 :root {
+  /* Tus colores de marca */
+  --color-rosa-principal: #ff01eb;
+  --color-verde-principal: #c3ffca;
+  
+  /* Fondos y textos base optimizados para tu marca */
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #111111;
 }
 
 @theme {
-  --color-rosa-principal: #ff01eb;
-  --color-verde-principal: #c3ffca;
+  /* Registramos los colores para que Tailwind los reconozca */
+  --color-rosa: var(--color-rosa-principal);
+  --color-verde: var(--color-verde-principal);
+  
+  /* Opcional: variantes para estados hover o fondos */
+  --color-rosa-hover: #d600c4;
+  --color-verde-bg: #eaffeb;
 
-  /* Fuentes */
+  /* Tipografías personalizadas */
   --font-heading: var(--font-heading);
   --font-body: var(--font-body);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Estilos globales para aplicar tu identidad visual */
+@layer base {
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+  }
+
+  /* Enlaces con tu rosa */
+  a {
+    @apply text-rosa hover:text-rosa-hover transition-colors duration-200;
+  }
+
+  /* Selección de texto con tu verde */
+  ::selection {
+    background-color: var(--color-verde-principal);
+    color: #000;
+  }
+
+  /* Scrollbar personalizado estilo gaming */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-rosa-principal);
+    border-radius: 5px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-rosa-hover);
   }
 }
