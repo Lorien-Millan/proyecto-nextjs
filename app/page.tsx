@@ -61,26 +61,27 @@ export default async function Home() {
   return (
     <main className="min-h-screen bg-gray-50">
       {/* Hero Section con Top Ventas */}
-      <section className="bg-gradient-to-r from-purple-900 to-blue-900 text-white py-16">
+      <section className="bg-gradient-to-r from-verde to-rosa text-white py-16">
         <div className="container mx-auto px-4">
-          <h1 className="text-4xl md:text-9xl font-heading text-center mb-4 p-7">
+          <h1 className="text-shadow-lg text-4xl md:text-9xl font-heading text-center mb-4 p-7 pb-20">
             BIENVENIDO
           </h1>
-          <p className="text-center text-xl text-gray-300 mb-12">
-            Descubre los mejores videojuegos al mejor precio
-          </p>
           
           <TopVentas productos={productosConVentas} />
         </div>
       </section>
 
       {/* Sección de Categorías */}
-      <section className="container mx-auto px-4 py-16">
-        <h2 className="text-3xl font-bold text-gray-800 text-center mb-12">
-          Explora por Categorías
-        </h2>
-        <GridCategorias categorias={categorias || []} />
-      </section>
+      <div className="bg-gradient-to-r from-verde to-rosa">
+        <section className="container mx-auto px-4 py-16">
+          <h2 className="text-3xl font-bold text-gray-800 text-center mb-12">
+            <span className="bg-verde text-black px-5 py-3 rounded-full text-2xl font-semibold">
+            Explora por Categorías
+            </span>
+          </h2>
+          <GridCategorias categorias={categorias || []} />
+        </section>
+      </div>
 
       {/* Enlace a todos los juegos */}
       <section className="container mx-auto px-4 py-8 text-center">

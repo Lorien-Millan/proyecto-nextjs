@@ -1,6 +1,25 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
+// 🏷️ Mapeo de Tildes
+const CATEGORY_NAME_MAP: Record<string, string> = {
+  'accion': 'Acción',
+  'clasificacion': 'Clasificación',
+  'estrategia': 'Estrategia',
+  'corazon': 'Corazón',
+  'mision': 'Misión',
+  'aventura': 'Aventura',
+  'simulacion': 'Simulación',
+  'deportes': 'Deportes',
+  'carreras': 'Carreras',
+};
+
+function formatCategoryName(nombre: string): string {
+  const lower = nombre.toLowerCase();
+  if (CATEGORY_NAME_MAP[lower]) return CATEGORY_NAME_MAP[lower];
+  return nombre.charAt(0).toUpperCase() + nombre.slice(1).toLowerCase();
+}
+
 // 1. Actualizamos la interfaz para incluir la imagen
 interface Categoria {
   id_categoria: number;
@@ -51,7 +70,7 @@ export default function GridCategorias({ categorias }: GridCategoriasProps) {
           {/* Texto sobre la imagen */}
           <div className="absolute bottom-0 left-0 right-0 p-6">
             <h3 className="text-2xl font-bold text-white group-hover:text-purple-400 transition-colors duration-300">
-              {categoria.nombre}
+              {formatCategoryName(categoria.nombre).toUpperCase()}
             </h3>
             
             {categoria.descripcion && (

@@ -25,6 +25,8 @@ export const metadata: Metadata = {
   description: "Videojuegos a precios ridículamente bajos",
 };
 
+
+
 export default function RootLayout({
   children,
 }: Readonly) {
@@ -33,7 +35,7 @@ export default function RootLayout({
       <body className={`${orbitron.variable} ${unbounded.variable} font-body text-white`}>
         {/* NAVBAR */}
 
-        <nav className={`font-heading font-bold flex items-center gap-6 bg-green-200 text-rosa-principal`}>
+        <nav className={`bg-gradient-to-r from-verde to-rosa font-heading font-bold flex items-center gap-6 bg-green-200 text-rosa-principal`}>
           <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition">
             <Image 
               src="/InicioLogo.png"

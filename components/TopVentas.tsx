@@ -5,7 +5,7 @@ interface Producto {
   id_producto: number;
   titulo: string;
   precio: number;
-  imagen: string; // Cambiado de 'imagen' a 'url_imagen' para consistencia
+  imagen: string;
   stock: number;
   ventas: number;
   plataforma?: string | null;
@@ -22,32 +22,25 @@ interface TopVentasProps {
 // 🎮 Función para colores de plataforma
 function getPlatformStyle(plataforma: string | null | undefined) {
   if (!plataforma) return 'bg-gray-200 text-gray-700';
-  
   const p = plataforma.toLowerCase();
-
   if (p.includes('switch') || p.includes('nintendo')) {
     return 'bg-red-600 text-white shadow-red-500/40';
   }
-  
   if (p.includes('playstation') || p.includes('ps4') || p.includes('ps5') || p.includes('ps')) {
     return 'bg-blue-600 text-white shadow-blue-500/40';
   }
-  
   if (p.includes('xbox')) {
     return 'bg-green-600 text-white shadow-green-500/40';
   }
-  
   if (p.includes('pc') || p.includes('steam')) {
     return 'bg-gray-900 text-white shadow-gray-600/40';
   }
-
   return 'bg-gray-200 text-gray-700';
 }
 
 // 🎯 Función para colores PEGI (oficiales)
 function getPegiStyle(pegi: number | null | undefined) {
   if (!pegi) return 'bg-gray-300 text-gray-700';
-
   switch (pegi) {
     case 3:
       return 'bg-green-500 text-white border-green-600';
@@ -64,6 +57,25 @@ function getPegiStyle(pegi: number | null | undefined) {
   }
 }
 
+// 🏷️ Mapeo de Tildes
+const CATEGORY_NAME_MAP: Record<string, string> = {
+  'accion': 'Acción',
+  'clasificacion': 'Clasificación',
+  'estrategia': 'Estrategia',
+  'corazon': 'Corazón',
+  'mision': 'Misión',
+  'aventura': 'Aventura',
+  'simulacion': 'Simulación',
+  'deportes': 'Deportes',
+  'carreras': 'Carreras',
+};
+
+function formatCategoryName(nombre: string): string {
+  const lower = nombre.toLowerCase();
+  if (CATEGORY_NAME_MAP[lower]) return CATEGORY_NAME_MAP[lower];
+  return nombre.charAt(0).toUpperCase() + nombre.slice(1).toLowerCase();
+}
+
 export default function TopVentas({ productos }: TopVentasProps) {
   if (!productos || productos.length === 0) {
     return (
@@ -75,8 +87,11 @@ export default function TopVentas({ productos }: TopVentasProps) {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-center mb-8">🏆 Top 3 Más Vendidos</h2>
-      
+      <h2 className="text-2xl font-bold text-center mb-8 pb-10">
+        <span className="bg-gradient-to-r from-yellow-500 to-white text-black px-5 py-3 rounded-full text-3xl font-semibold">
+        🏆 Top 3 Más Vendidos
+        </span>
+      </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
         {productos.map((producto, index) => {
           const platformClasses = getPlatformStyle(producto.plataforma);
@@ -125,7 +140,7 @@ export default function TopVentas({ productos }: TopVentasProps) {
                     </div>
                   )}
 
-                  {/* 🔹 Badge de Plataforma - Debajo del PEGI o en su defecto */}
+                  {/* 🔹 Badge de Plataforma - Debajo del PEGI */}
                   {producto.plataforma && (
                     <div className={`
                       absolute top-4 right-4 z-10
@@ -143,8 +158,11 @@ export default function TopVentas({ productos }: TopVentasProps) {
 
                 {/* Información del producto */}
                 <div className="p-6">
-                  <div className="text-sm text-purple-600 font-semibold mb-2">
-                    {producto.categoria?.nombre || 'Sin categoría'}
+                  {/* 🏷️ Categoría formateada y en mayúsculas */}
+                  <div className="text-sm text-rosa font-semibold mb-2 uppercase tracking-wide">
+                    {producto.categoria?.nombre 
+                      ? formatCategoryName(producto.categoria.nombre).toUpperCase() 
+                      : 'SIN CATEGORÍA'}
                   </div>
                   
                   <h3 className="text-xl font-bold text-gray-800 mb-2 line-clamp-2">
@@ -152,7 +170,7 @@ export default function TopVentas({ productos }: TopVentasProps) {
                   </h3>
 
                   <div className="flex items-center justify-between mt-4">
-                    <div className="text-2xl font-bold text-purple-700">
+                    <div className="text-2xl font-bold text-gray-900">
                       ${producto.precio?.toFixed(2)}
                     </div>
                     
