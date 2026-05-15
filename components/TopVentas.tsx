@@ -103,7 +103,7 @@ export default function TopVentas({ productos }: TopVentasProps) {
               key={producto.id_producto}
               className="group"
             >
-              <div className="bg-white rounded-xl shadow-2xl overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-purple-500/50 relative">
+              <div className="bg-white rounded-xl shadow-2xl overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-rosa/50 relative">
                 {/* Badge de posición */}
                 <div className={`
                   absolute top-4 left-4 w-10 h-10 rounded-full flex items-center justify-center font-bold text-white z-20 shadow-lg

@@ -133,7 +133,7 @@ export default function ProductCard({ producto }: ProductCardProps) {
           )}
 
           {/* Título */}
-          <h3 className="text-xl font-bold text-gray-800 mb-2 line-clamp-2 leading-tight group-hover:text-purple-700 transition-colors">
+          <h3 className="text-xl font-bold text-gray-800 mb-2 line-clamp-2 leading-tight group-hover:text-rosa transition-colors">
             {producto.titulo}
           </h3>
 

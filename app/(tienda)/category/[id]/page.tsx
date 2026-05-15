@@ -71,7 +71,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ id: s
   return (
     <main className="min-h-screen bg-gray-50">
       {/*  HEADER DE LA CATEGORÍA */}
-      <section className="relative h-80 bg-gradient-to-r from-purple-900 to-blue-900 overflow-hidden flex items-center justify-center">
+      <section className="relative h-80 bg-gradient-to-r from-verde to-rosa overflow-hidden flex items-center justify-center">
         {/* Imagen de fondo con baja opacidad */}
         {categoria.imagen && (
           <div className="absolute inset-0 opacity-20">
@@ -86,7 +86,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ id: s
         )}
         
         <div className="relative z-10 text-center px-4 max-w-4xl">
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-xl">
+          <h1 className="text-5xl md:text-9xl font-bold font-heading text-white mb-6 drop-shadow-xl">
             {nombreFormateado}
           </h1>
           
@@ -102,7 +102,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ id: s
       <section className="container mx-auto px-4 py-16">
         <div className="flex items-center justify-between mb-10">
           <h2 className="text-3xl font-bold text-gray-800">Juegos disponibles</h2>
-          <span className="bg-purple-100 text-purple-800 px-5 py-2 rounded-full text-sm font-semibold shadow-sm">
+          <span className="bg-rosa/10 text-rosa px-5 py-2 rounded-full text-sm font-semibold shadow-sm">
             {productos?.length || 0} {productos?.length === 1 ? 'juego' : 'juegos'}
           </span>
         </div>

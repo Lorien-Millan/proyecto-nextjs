@@ -1,35 +1,27 @@
 'use client';
 
 import { useState } from 'react';
+import { createBrowserClient } from '@supabase/ssr';
 import { useRouter } from 'next/navigation';
-import { createClientComponentClient } from '@/lib/supabase/client';
+import Link from 'next/link';
 
 export default function RegistroPage() {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+  
   const [formData, setFormData] = useState({
-    nombre: '',
     email: '',
     password: '',
     confirmPassword: '',
-    rol: 'cliente', // valor por defecto según tu schema
+    nombre: '',
   });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
 
-  const supabase = createClientComponentClient();
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleRegister = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError(null);
 
-    // Validaciones
     if (formData.password !== formData.confirmPassword) {
       setError('Las contraseñas no coinciden');
       return;
@@ -43,154 +35,166 @@ export default function RegistroPage() {
     setLoading(true);
 
     try {
-      // Registrar usuario en Supabase Auth
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      );
+
+      // 1. Registrar en Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
         options: {
           data: {
             nombre: formData.nombre,
-            rol: formData.rol,
           },
         },
       });
 
       if (authError) throw authError;
 
-      // Si necesitas insertar datos adicionales en la tabla usuario
+      // 2. Crear perfil en la tabla 'perfil_usuario' (NO en 'usuario')
       if (authData.user) {
         const { error: dbError } = await supabase
-          .from('usuario')
-          .insert({
-            id: authData.user.id,
-            nombre: formData.nombre,
-            email: formData.email,
-            rol: formData.rol,
-            fecha_registro: new Date().toISOString(),
-          });
+          .from('perfil_usuario')  // 👈 Tabla nueva
+          .insert([
+            {
+              id: authData.user.id,  // UUID de Supabase Auth
+              email: formData.email,
+              nombre: formData.nombre,
+              rol: 'user',
+              fecha_registro: new Date().toISOString(),
+            },
+          ]);
 
         if (dbError) throw dbError;
       }
 
-      // Redirigir al login o verificar si el email necesita confirmación
-      alert('Registro exitoso. Por favor verifica tu correo electrónico.');
-      router.push('/login');
-    } catch (error: any) {
-      setError(error.message || 'Error al registrar el usuario');
+      setSuccess(true);
+
+      setTimeout(() => {
+        router.push('/login?registrado=true');
+      }, 2000);
+
+    } catch (err: any) {
+      setError(err.message || 'Error al registrar el usuario');
     } finally {
       setLoading(false);
     }
   };
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Crear una cuenta
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Completa el formulario para registrarte
-          </p>
-        </div>
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
-        <form className="mt-8 space-y-6" onSubmit={handleRegister}>
-          {error && (
-            <div className="rounded-md bg-red-50 p-4">
-              <p className="text-sm text-red-800">{error}</p>
+  return (
+    <main className="min-h-screen bg-gradient-to-br from-verde/20 to-rosa/20 py-12 flex items-center justify-center px-4">
+      <div className="max-w-md w-full">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 border-t-4" style={{ borderColor: 'var(--color-rosa-principal)' }}>
+          
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold font-heading mb-2" style={{ color: 'var(--color-rosa-principal)' }}>
+              Crear Cuenta
+            </h1>
+            <p className="text-gray-600">Únete a NerfThis Game Shop</p>
+          </div>
+
+          {success && (
+            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6 text-center">
+              <p className="font-semibold">✅ ¡Registro exitoso!</p>
+              <p className="text-sm">Redirigiendo al login...</p>
             </div>
           )}
 
-          <div className="rounded-md shadow-sm space-y-4">
+          {error && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6">
+              <p className="font-semibold">❌ Error</p>
+              <p className="text-sm">{error}</p>
+            </div>
+          )}
+          {/* Nombre */}
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 mb-1">
-                Nombre completo
-              </label>
+              <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 mb-2">Nombre completo</label>
               <input
+                type="text"
                 id="nombre"
                 name="nombre"
-                type="text"
-                required
                 value={formData.nombre}
                 onChange={handleChange}
-                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Juan Pérez"
+                required
+                className="text-black w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rosa focus:border-transparent transition-all"
+                placeholder="Tu nombre"
               />
             </div>
-
+            {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                Correo electrónico
-              </label>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">Correo electrónico</label>
               <input
+                type="email"
                 id="email"
                 name="email"
-                type="email"
-                autoComplete="email"
-                required
                 value={formData.email}
                 onChange={handleChange}
-                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                required
+                className="text-black w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rosa focus:border-transparent transition-all"
                 placeholder="tu@email.com"
               />
             </div>
-
-            
+            {/* Contraseña */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                Contraseña
-              </label>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">Contraseña</label>
               <input
+                type="password"
                 id="password"
                 name="password"
-                type="password"
-                autoComplete="new-password"
-                required
                 value={formData.password}
                 onChange={handleChange}
-                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                required
+                minLength={6}
+                className="text-black w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rosa focus:border-transparent transition-all"
                 placeholder="••••••••"
               />
             </div>
-
+            {/* Confirmar contraseña */}
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                Confirmar contraseña
-              </label>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">Confirmar contraseña</label>
               <input
+                type="password"
                 id="confirmPassword"
                 name="confirmPassword"
-                type="password"
-                autoComplete="new-password"
-                required
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                required
+                minLength={6}
+                className="text-black w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rosa focus:border-transparent transition-all"
                 placeholder="••••••••"
               />
             </div>
-          </div>
-
-          <div>
+            {/* Botón registro */}
             <button
               type="submit"
-              disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={loading || success}
+              className="font-heading w-full py-3 px-4 rounded-lg font-bold text-white transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+              style={{ backgroundColor: 'var(--color-rosa-principal)' }}
             >
-              {loading ? 'Registrando...' : 'Registrarse'}
+              {loading ? 'Registrando...' : '🚀 Crear cuenta'}
             </button>
-          </div>
+          </form>
 
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
-              ¿Ya tienes una cuenta?{' '}
-              <a href="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
+          <div className="mt-6 text-center">
+            <p className="text-gray-600">
+              ¿Ya tienes cuenta?{' '}
+              <Link href="/login" className="font-semibold hover:underline" style={{ color: 'var(--color-rosa-principal)' }}>
                 Inicia sesión
-              </a>
+              </Link>
             </p>
           </div>
-        </form>
+        </div>
       </div>
-    </div>
+    </main>
   );
 }

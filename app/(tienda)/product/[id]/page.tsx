@@ -1,7 +1,11 @@
+'use client';  // 👈 Necesario para usar el contexto del carrito
+
 import { createServerClient } from '@/lib/supabase/server';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useCarrito } from '@/contexts/CarritoContext';  // 👈 Importamos el hook del carrito
+import { useEffect, useState } from 'react';
 
 // --- 🎨 Estilos de Badges ---
 function getPlatformStyle(plataforma: string | null) {
@@ -23,7 +27,7 @@ function getPegiStyle(pegi: number | null) {
   return 'bg-gray-200 text-gray-600';
 }
 
-// --- 🏷️ Formateo de Categoría ---
+// --- 🏷️ Formateo de Categoría (Tildes) ---
 const CATEGORY_NAME_MAP: Record<string, string> = {
   'accion': 'Acción', 'clasificacion': 'Clasificación', 'estrategia': 'Estrategia',
   'corazon': 'Corazón', 'mision': 'Misión', 'aventura': 'Aventura', 'simulacion': 'Simulación'
@@ -36,23 +40,46 @@ function formatCategoryName(nombre: string): string {
 }
 
 // --- 📄 Página de Producto ---
-export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const supabase = createServerClient();
+export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
+  const { agregarAlCarrito } = useCarrito();  // 👈 Hook del carrito
+  const [producto, setProducto] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  const { data: productoData } = await supabase
-    .from('producto')
-    .select('*, categoria:categoria(nombre)')
-    .eq('id_producto', parseInt(id))
-    .limit(1);
+  useEffect(() => {
+    async function loadProducto() {
+      const { id } = await params;
+      const supabase = createServerClient();
 
-  const producto = productoData?.[0];
-  if (!producto) notFound();
+      const { data: productoData } = await supabase
+        .from('producto')
+        .select('*, categoria:categoria(nombre)')
+        .eq('id_producto', parseInt(id))
+        .limit(1);
 
+      if (productoData && productoData.length > 0) {
+        setProducto(productoData[0]);
+      } else {
+        notFound();
+      }
+      setLoading(false);
+    }
+
+    loadProducto();
+  }, [params]);
+
+  if (loading || !producto) {
+    return (
+      <main className="min-h-screen bg-gray-50 py-12 flex items-center justify-center">
+        <div className="text-2xl font-bold text-rosa">Cargando...</div>
+      </main>
+    );
+  }
+
+  // Preparar datos visuales
   const platformClasses = getPlatformStyle(producto.plataforma);
   const pegiClasses = getPegiStyle(producto.calificacion_pegi);
   const categoriaDisplay = producto.categoria?.nombre ? formatCategoryName(producto.categoria.nombre) : 'Sin categoría';
-  const imageUrl = producto.imagen2 || '';
+  const imageUrl = producto.imagen2 || producto.imagen || '';
 
   // 🔢 Calcular descuento
   let descuentoPorcentaje = 0;
@@ -65,11 +92,10 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   }
 
   return (
-    <main className="min-h-screen bg-verde/60 py-12">
+    <main className="min-h-screen bg-gray-50 py-12">
       <div className="container mx-auto px-4 max-w-7xl">
-        
         {/* 🔙 Botón Volver */}
-        <Link href="/" className="inline-flex items-center text-gray-500 hover:text-rosa transition-colors font-medium">
+        <Link href="/" className="inline-flex items-center text-gray-500 hover:text-rosa transition-colors font-medium mb-8">
           <span className="mr-2">←</span> Volver a la tienda
         </Link>
 
@@ -192,14 +218,30 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                 </div>
               </div>
 
-              {/* Botón de Compra */}
+              {/* 🛒 Botón de Compra - FUNCIONAL */}
               <div className="mt-auto">
                 {producto.stock > 0 ? (
-                  <button className="w-full bg-rosa text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-rosa/40 hover:scale-[1.01] transition-all active:scale-95" style={{ backgroundColor: 'var(--color-rosa-principal)' }}>
+                  <button
+                    onClick={() =>
+                      agregarAlCarrito({
+                        id_producto: producto.id_producto,
+                        titulo: producto.titulo,
+                        precio: producto.precio,
+                        imagen: imageUrl,
+                        stock: producto.stock,
+                        cantidad: 1,
+                      })
+                    }
+                    className="w-full bg-rosa text-white py-4 rounded-xl font-bold font-heading text-3xl shadow-lg shadow-rosa/40 hover:scale-[1.01] transition-all active:scale-95"
+                    style={{ backgroundColor: 'var(--color-rosa-principal)' }}
+                  >
                     🛒 Añadir al Carrito
                   </button>
                 ) : (
-                  <button disabled className="w-full bg-gray-200 text-gray-400 py-4 rounded-xl font-bold text-lg cursor-not-allowed">
+                  <button
+                    disabled
+                    className="w-full bg-gray-200 text-gray-400 py-4 rounded-xl font-bold text-lg cursor-not-allowed"
+                  >
                     Producto Agotado
                   </button>
                 )}
