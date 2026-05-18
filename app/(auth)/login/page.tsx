@@ -99,7 +99,7 @@ export default function LoginPage() {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rosa focus:border-transparent transition-all"
+                className="w-full px-4 py-3 text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-rosa focus:border-transparent transition-all"
                 style={{ '--tw-ring-color': 'var(--color-rosa-principal)' } as any}
                 placeholder="tu@email.com"
                 autoComplete="email"
@@ -112,7 +112,7 @@ export default function LoginPage() {
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                   Contraseña
                 </label>
-                {/* Puedes activar esto si quieres recuperar contraseña */}
+                {/* recuperar contraseña */}
                 {/* <Link href="/forgot-password" className="text-sm text-rosa hover:underline">
                   ¿Olvidaste tu contraseña?
                 </Link> */}
@@ -124,7 +124,7 @@ export default function LoginPage() {
                 value={formData.password}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rosa focus:border-transparent transition-all"
+                className="w-full px-4 py-3 text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-rosa focus:border-transparent transition-all"
                 style={{ '--tw-ring-color': 'var(--color-rosa-principal)' } as any}
                 placeholder="••••••••"
                 autoComplete="current-password"

@@ -1,9 +1,8 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Orbitron, Unbounded } from "next/font/google";
-import Link from 'next/link';
-import Image from 'next/image';
 import { CarritoProvider } from '@/contexts/CarritoContext';
+import Navbar from '@/components/Navbar';
 
 // Fuente para títulos
 const orbitron = Orbitron({
@@ -26,8 +25,6 @@ export const metadata: Metadata = {
   description: "Videojuegos a precios ridículamente bajos",
 };
 
-
-
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -35,36 +32,8 @@ export default function RootLayout({
     <html lang="es">
       <body className={`${orbitron.variable} ${unbounded.variable} font-body text-white`}>
         <CarritoProvider>
-          {/* NAVBAR */}
-
-          <nav className={`bg-gradient-to-r from-verde to-rosa font-heading font-bold flex items-center gap-6 bg-green-200 text-rosa-principal`}>
-            <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition">
-              <Image 
-                src="/InicioLogo.png"
-                alt="NerfThis Logo"
-                width={353}
-                height={40}
-              />
-            </Link>
-            
-            <Link href="/carrito" className="hover:opacity-80 transition">
-              🛒 Carrito
-            </Link>
-            
-            <Link href="/login" className="hover:opacity-80 transition">
-              🔑 Login
-            </Link>
-            
-            <Link href="/registro" className="hover:opacity-80 transition">
-              Registro
-            </Link>
-
-          </nav>
-          <p className= "p-1 font-body bg-gray-100 text-gray-400 text-center">
-            "Videojuegos a precios RIDÍCULAMENTE bajos"
-          </p>
-
-          {/* CONTENIDO DE CADA PÁGINA */}
+          {/*  Navbar Dinámico */}
+          <Navbar />
           <main>
             {children}
           </main>
