@@ -1,136 +1,172 @@
 'use client';
 
 import { useState } from 'react';
+import { createBrowserClient } from '@supabase/ssr';
 import { useRouter } from 'next/navigation';
-import { createClientComponentClient } from '@/lib/supabase/client';
+import Link from 'next/link';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  
+  // Estados del formulario
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+  });
 
-  const supabase = createClientComponentClient();
-
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError(null);
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      );
+
+      // Intentar iniciar sesión
+      const { error: loginError } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
       });
 
-      if (error) throw error;
+      if (loginError) throw loginError;
 
-      // Redirigir al dashboard o página principal
+      // Si llega aquí, el login fue exitoso
+      // Redirigir a la página principal
       router.push('/');
-      router.refresh();
-    } catch (error: any) {
-      setError(error.message || 'Error al iniciar sesión');
+      router.refresh(); // Refrescar para actualizar el estado de autenticación
+
+    } catch (err: any) {
+      // Manejo de errores comunes de Supabase
+      if (err.message.includes('Invalid login credentials')) {
+        setError('Email o contraseña incorrectos');
+      } else {
+        setError(err.message || 'Error al iniciar sesión');
+      }
     } finally {
       setLoading(false);
     }
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Iniciar Sesión
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Ingresa tus credenciales para continuar
-          </p>
-        </div>
+    <main className="min-h-screen bg-gradient-to-br from-verde/20 to-rosa/20 py-12 flex items-center justify-center px-4">
+      <div className="max-w-md w-full">
         
-        <form className="mt-8 space-y-6" onSubmit={handleLogin}>
+        {/* Tarjeta de login */}
+        <div className="bg-white rounded-2xl shadow-2xl p-8 border-t-4" style={{ borderColor: 'var(--color-rosa-principal)' }}>
+          
+          {/* Título */}
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold font-heading mb-2" style={{ color: 'var(--color-rosa-principal)' }}>
+              Bienvenido
+            </h1>
+            <p className="text-gray-600">
+              Inicia sesión en NerfThis Game Shop
+            </p>
+          </div>
+
+          {/* Mensaje de error */}
           {error && (
-            <div className="rounded-md bg-red-50 p-4">
-              <p className="text-sm text-red-800">{error}</p>
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6 text-center">
+              <p className="font-semibold">❌ Error</p>
+              <p className="text-sm">{error}</p>
             </div>
           )}
 
-          <div className="rounded-md shadow-sm space-y-4">
+          {/* Formulario */}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            
+            {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                 Correo electrónico
               </label>
               <input
+                type="email"
                 id="email"
                 name="email"
-                type="email"
-                autoComplete="email"
+                value={formData.email}
+                onChange={handleChange}
                 required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rosa focus:border-transparent transition-all"
+                style={{ '--tw-ring-color': 'var(--color-rosa-principal)' } as any}
                 placeholder="tu@email.com"
+                autoComplete="email"
               />
             </div>
-            
+
+            {/* Contraseña */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                Contraseña
-              </label>
+              <div className="flex items-center justify-between mb-2">
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                  Contraseña
+                </label>
+                {/* Puedes activar esto si quieres recuperar contraseña */}
+                {/* <Link href="/forgot-password" className="text-sm text-rosa hover:underline">
+                  ¿Olvidaste tu contraseña?
+                </Link> */}
+              </div>
               <input
+                type="password"
                 id="password"
                 name="password"
-                type="password"
-                autoComplete="current-password"
+                value={formData.password}
+                onChange={handleChange}
                 required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rosa focus:border-transparent transition-all"
+                style={{ '--tw-ring-color': 'var(--color-rosa-principal)' } as any}
                 placeholder="••••••••"
+                autoComplete="current-password"
               />
             </div>
-          </div>
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember-me"
-                name="remember-me"
-                type="checkbox"
-                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-              />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                Recordarme
-              </label>
-            </div>
-
-            <div className="text-sm">
-              <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
-                ¿Olvidaste tu contraseña?
-              </a>
-            </div>
-          </div>
-
-          <div>
+            {/* Botón de login */}
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3 px-4 rounded-lg font-bold text-white transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
+              style={{ backgroundColor: 'var(--color-rosa-principal)' }}
             >
-              {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  Iniciando...
+                </span>
+              ) : (
+                '🔑 Iniciar sesión'
+              )}
             </button>
-          </div>
+          </form>
 
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
-              ¿No tienes una cuenta?{' '}
-              <a href="/registro" className="font-medium text-indigo-600 hover:text-indigo-500">
-                Regístrate
-              </a>
+          {/* Link a registro */}
+          <div className="mt-6 text-center">
+            <p className="text-gray-600">
+              ¿No tienes cuenta?{' '}
+              <Link href="/registro" className="font-semibold hover:underline" style={{ color: 'var(--color-rosa-principal)' }}>
+                Regístrate aquí
+              </Link>
             </p>
           </div>
-        </form>
+        </div>
+
+        <p className="text-center text-sm text-gray-600 mt-6">
+          Tus datos están protegidos y encriptados
+        </p>
       </div>
-    </div>
+    </main>
   );
 }
