@@ -85,7 +85,7 @@ export default async function Home() {
 
       {/* Enlace a todos los juegos */}
       <section className="container mx-auto px-4 py-8 text-center">
-        <Link href="/tienda/juegos" className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+        <Link href="/juegos" className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
           Ver todos los productos
         </Link>
       </section>

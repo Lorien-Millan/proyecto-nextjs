@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createBrowserClient } from '@supabase/ssr';
 
 interface ProductoCarrito {
   id_producto: number;
@@ -25,45 +26,59 @@ const CarritoContext = createContext<CarritoContextType | undefined>(undefined);
 
 export function CarritoProvider({ children }: { children: ReactNode }) {
   const [carrito, setCarrito] = useState<ProductoCarrito[]>([]);
+  const [userId, setUserId] = useState<string>('guest'); // Por defecto es invitado
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Cargar carrito desde localStorage al iniciar
+  // 1. Escuchar autenticación y cargar el carrito correcto
   useEffect(() => {
-    const carritoGuardado = localStorage.getItem('carrito');
-    if (carritoGuardado) {
-      try {
-        setCarrito(JSON.parse(carritoGuardado));
-      } catch (error) {
-        console.error('Error al cargar el carrito:', error);
-      }
-    }
-    setIsLoaded(true);
+    const supabase = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+
+    // Cargar estado inicial
+    const initAuth = async () => {
+      const { data } = await supabase.auth.getUser();
+      const id = data.user?.id || 'guest';
+      setUserId(id);
+      
+      const saved = localStorage.getItem(`carrito_${id}`);
+      setCarrito(saved ? JSON.parse(saved) : []);
+      setIsLoaded(true);
+    };
+    initAuth();
+
+    // Suscribirse a cambios (login/logout)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      const newId = session?.user?.id || 'guest';
+      setUserId(newId);
+      
+      // Cambiar al carrito de la nueva cuenta
+      const saved = localStorage.getItem(`carrito_${newId}`);
+      setCarrito(saved ? JSON.parse(saved) : []);
+      setIsLoaded(true);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  // Guardar carrito en localStorage cada vez que cambie
+  // 2. Guardar en localStorage cuando cambia el carrito
   useEffect(() => {
     if (isLoaded) {
-      localStorage.setItem('carrito', JSON.stringify(carrito));
+      localStorage.setItem(`carrito_${userId}`, JSON.stringify(carrito));
     }
-  }, [carrito, isLoaded]);
+  }, [carrito, userId, isLoaded]);
 
   const agregarAlCarrito = (producto: ProductoCarrito) => {
     setCarrito((prev) => {
       const existe = prev.find((item) => item.id_producto === producto.id_producto);
-      
       if (existe) {
-        // Si ya existe, aumentar cantidad (si no supera el stock)
-        if (existe.cantidad < producto.stock) {
-          return prev.map((item) =>
-            item.id_producto === producto.id_producto
-              ? { ...item, cantidad: item.cantidad + 1 }
-              : item
-          );
-        }
-        return prev; // No hacer nada si ya tiene el máximo
+        return prev.map((item) =>
+          item.id_producto === producto.id_producto
+            ? { ...item, cantidad: Math.min(item.cantidad + 1, producto.stock) }
+            : item
+        );
       }
-      
-      // Si no existe, agregar con cantidad 1
       return [...prev, { ...producto, cantidad: 1 }];
     });
   };
@@ -77,7 +92,6 @@ export function CarritoProvider({ children }: { children: ReactNode }) {
       eliminarDelCarrito(id);
       return;
     }
-
     setCarrito((prev) =>
       prev.map((item) =>
         item.id_producto === id ? { ...item, cantidad } : item
@@ -85,33 +99,14 @@ export function CarritoProvider({ children }: { children: ReactNode }) {
     );
   };
 
-  const vaciarCarrito = () => {
-    setCarrito([]);
-  };
+  const vaciarCarrito = () => setCarrito([]);
 
-  // Calcular total del carrito
-  const totalCarrito = carrito.reduce(
-    (total, item) => total + item.precio * item.cantidad,
-    0
-  );
-
-  // Calcular cantidad total de items
-  const cantidadTotal = carrito.reduce(
-    (total, item) => total + item.cantidad,
-    0
-  );
+  const totalCarrito = carrito.reduce((total, item) => total + item.precio * item.cantidad, 0);
+  const cantidadTotal = carrito.reduce((total, item) => total + item.cantidad, 0);
 
   return (
     <CarritoContext.Provider
-      value={{
-        carrito,
-        agregarAlCarrito,
-        eliminarDelCarrito,
-        actualizarCantidad,
-        vaciarCarrito,
-        totalCarrito,
-        cantidadTotal,
-      }}
+      value={{ carrito, agregarAlCarrito, eliminarDelCarrito, actualizarCantidad, vaciarCarrito, totalCarrito, cantidadTotal }}
     >
       {children}
     </CarritoContext.Provider>
@@ -120,8 +115,6 @@ export function CarritoProvider({ children }: { children: ReactNode }) {
 
 export function useCarrito() {
   const context = useContext(CarritoContext);
-  if (context === undefined) {
-    throw new Error('useCarrito debe ser usado dentro de un CarritoProvider');
-  }
+  if (context === undefined) throw new Error('useCarrito debe usarse dentro de CarritoProvider');
   return context;
 }

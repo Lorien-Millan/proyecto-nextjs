@@ -2,7 +2,7 @@
 
 :root {
   /* Tus colores de marca */
-  --color-rosa-principal: #ff01eb;
+  --color-rosa-principal: #ff4af0;
   --color-verde-principal: #c3ffca;
   
   /* Fondos y textos base optimizados para tu marca */
@@ -16,7 +16,7 @@
   --color-verde: var(--color-verde-principal);
   
   /* Opcional: variantes para estados hover o fondos */
-  --color-rosa-hover: #d600c4;
+  --color-rosa-hover: #ff33ee;
   --color-verde-bg: #eaffeb;
 
   /* Tipografías personalizadas */
