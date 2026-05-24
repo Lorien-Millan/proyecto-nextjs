@@ -1,12 +1,86 @@
-'use client';
+'use client'; // Necesario porque usamos hooks (useState, useEffect)
 
+import { useState, useEffect } from 'react';
 import { useCarrito } from '@/contexts/CarritoContext';
+import { createBrowserClient } from '@supabase/ssr';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 
 export default function CarritoPage() {
   const { carrito, eliminarDelCarrito, actualizarCantidad, totalCarrito, vaciarCarrito } = useCarrito();
+  const router = useRouter();
+  
+  // Estados para manejar la sesión y el proceso de compra
+  const [user, setUser] = useState<any>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [message, setMessage] = useState<{ type: 'error' | 'success', text: string } | null>(null);
 
+  // 1. Obtener el usuario actual al cargar la página
+  useEffect(() => {
+    const supabase = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+    
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user);
+    });
+  }, []);
+
+  // 2. Función para finalizar la compra
+  const handleFinalizarCompra = async () => {
+    // Si no hay usuario, redirigir al login
+    if (!user) {
+      setMessage({ type: 'error', text: 'Debes iniciar sesión para realizar la compra.' });
+      setTimeout(() => router.push('/login'), 2000);
+      return;
+    }
+
+    setIsProcessing(true);
+    setMessage(null);
+
+    try {
+      // Preparar los items en el formato que espera la API
+      const items = carrito.map(item => ({
+        id_producto: item.id_producto,
+        precio: item.precio
+      }));
+
+      // Llamada a la API
+      const res = await fetch('/api/pedido/crear', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.id,
+          items: items,
+          total: totalCarrito
+        })
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setMessage({ 
+          type: 'success', 
+          text: `¡Compra realizada con éxito! Tu ID de pedido es: ${data.id_pedido}` 
+        });
+        
+        // Vaciar el carrito y redirigir al inicio después de unos segundos
+        vaciarCarrito();
+        setTimeout(() => router.push('/'), 3000);
+      } else {
+        setMessage({ type: 'error', text: data.error || 'Error al procesar el pedido.' });
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: 'Error de conexión con el servidor.' });
+      console.error(error);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  // Renderizado si el carrito está vacío
   if (carrito.length === 0) {
     return (
       <main className="bg-gradient-to-r from-verde to-rosa min-h-screen py-12">
@@ -31,10 +105,20 @@ export default function CarritoPage() {
     );
   }
 
+  // Renderizado principal del carrito
   return (
     <main className="min-h-screen bg-gradient-to-r from-verde to-rosa py-12">
       <div className="container mx-auto px-4 max-w-6xl">
         <h1 className="text-4xl font-heading font-bold text-gray-900 mb-8">🛒 Tu Carrito</h1>
+
+        {/* Mensajes de Feedback (Error/Éxito) */}
+        {message && (
+          <div className={`mb-6 p-4 rounded-xl text-center font-bold ${
+            message.type === 'success' ? 'bg-green-100 text-green-700 border border-green-400' : 'bg-red-100 text-red-700 border border-red-400'
+          }`}>
+            {message.text}
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Lista de productos */}
@@ -75,12 +159,7 @@ export default function CarritoPage() {
                     {/* Control de cantidad */}
                     <div className="text-black flex items-center gap-3">
                       <button
-                        onClick={() =>
-                          actualizarCantidad(
-                            producto.id_producto,
-                            producto.cantidad - 1
-                          )
-                        }
+                        onClick={() => actualizarCantidad(producto.id_producto, producto.cantidad - 1)}
                         className="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center font-bold text-gray-700 transition-colors"
                       >
                         -
@@ -89,12 +168,7 @@ export default function CarritoPage() {
                         {producto.cantidad}
                       </span>
                       <button
-                        onClick={() =>
-                          actualizarCantidad(
-                            producto.id_producto,
-                            producto.cantidad + 1
-                          )
-                        }
+                        onClick={() => actualizarCantidad(producto.id_producto, producto.cantidad + 1)}
                         disabled={producto.cantidad >= producto.stock}
                         className="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center font-bold text-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
@@ -149,8 +223,13 @@ export default function CarritoPage() {
                 </div>
               </div>
 
-              <button className="w-full bg-rosa text-white py-4 rounded-xl font-bold font-heading text-2xl shadow-lg hover:bg-rosa-hover transition-all mb-4">
-                Finalizar Compra
+              {/* Botón Finalizar Compra ACTUALIZADO */}
+              <button
+                onClick={handleFinalizarCompra}
+                disabled={isProcessing}
+                className="w-full bg-rosa text-white py-4 rounded-xl font-bold font-heading text-2xl shadow-lg hover:bg-rosa-hover transition-all mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isProcessing ? 'Procesando...' : 'Finalizar Compra'}
               </button>
 
               <Link
