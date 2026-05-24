@@ -232,7 +232,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                         cantidad: 1,
                       })
                     }
-                    className="w-full bg-rosa text-white py-4 rounded-xl font-bold font-heading text-3xl shadow-lg shadow-rosa/40 hover:scale-[1.01] transition-all active:scale-95"
+                    className="cursor-pointer w-full bg-rosa text-white py-4 rounded-xl font-bold font-heading text-3xl shadow-lg shadow-rosa/40 hover:scale-[1.01] transition-all active:scale-95"
                     style={{ backgroundColor: 'var(--color-rosa-principal)' }}
                   >
                     🛒 Añadir al Carrito
@@ -240,7 +240,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                 ) : (
                   <button
                     disabled
-                    className="w-full bg-gray-200 text-gray-400 py-4 rounded-xl font-bold text-lg cursor-not-allowed"
+                    className="cursor-pointer w-full bg-gray-200 text-gray-400 py-4 rounded-xl font-bold text-lg cursor-not-allowed"
                   >
                     Producto Agotado
                   </button>

@@ -157,7 +157,7 @@ export default function ProductCard({ producto }: ProductCardProps) {
             </div>
             
             <button className={`
-              px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-300 shadow-md
+              cursor-pointer px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-300 shadow-md
               ${producto.stock > 0 
                 ? 'bg-rosa text-white hover:bg-rosa-hover hover:shadow-lg hover:shadow-rosa/30' 
                 : 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none'}
