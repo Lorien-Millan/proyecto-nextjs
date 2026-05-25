@@ -51,7 +51,7 @@ export default function LoginPage() {
     }
   };
 
-  // 🔹 NUEVO: Función para login con Google
+  // Función para login con Google
   const handleGoogleAuth = async () => {
     setError(null);
     setLoading(true);
@@ -61,7 +61,7 @@ export default function LoginPage() {
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
       );
-
+                                                                                //AQUI SE CONECTA CON EL PROVIDER DE GOOGLE
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {

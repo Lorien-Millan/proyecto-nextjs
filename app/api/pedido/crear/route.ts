@@ -1,11 +1,11 @@
 import { createServerClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 
-export async function POST(request: Request) {
+export async function POST(request: Request) {                //AQUI SE LLEVA A CABO LA PETICION POST
   try {
     // 1. Leer el JSON enviado
-    const body = await request.json();
-    const { userId, items, total } = body;
+    const body = await request.json();                    //LA PETICION POST CREA UN PEDIDO CON LOS DETALLES
+    const { userId, items, total } = body;                //PERTENECIENTES A LA BASE DE DATOS DE SUPABASE
 
     if (!userId || !items || items.length === 0 || !total) {
       return NextResponse.json({ error: 'Faltan datos obligatorios' }, { status: 400 });
@@ -28,7 +28,6 @@ export async function POST(request: Request) {
     if (errorPedido) throw errorPedido;
 
     // 3. Insertar en tabla 'detalles_pedido'
-    // Nota: tu tabla no tiene columna 'cantidad', así que se guarda 1 fila por producto
     const detalles = items.map((item: any) => ({
       id_pedido: pedido.id_pedido,
       id_producto: item.id_producto,

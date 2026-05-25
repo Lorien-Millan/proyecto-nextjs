@@ -48,7 +48,7 @@ export default function CarritoPage() {
       }));
 
       // Llamada a la API
-      const res = await fetch('/api/pedido/crear', {
+      const res = await fetch('/api/pedido/crear', {                  //El frontend llama al POST cuando el usuario pulsa "Finalizar Compra"
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
