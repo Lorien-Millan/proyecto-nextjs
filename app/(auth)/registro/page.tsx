@@ -113,7 +113,7 @@ export default function RegistroPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-verde/20 to-rosa/20 py-12 flex items-center justify-center px-4">
+    <main className="min-h-screen bg-gradient-to-r from-verde to-rosa py-12 flex items-center justify-center px-4">
       <div className="max-w-md w-full">
         <div className="bg-white rounded-2xl shadow-2xl p-8 border-t-4" style={{ borderColor: 'var(--color-rosa-principal)' }}>
           <div className="text-center mb-8">

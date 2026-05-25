@@ -106,7 +106,7 @@ export default function Navbar() {
             </span>
             <button
               onClick={handleLogout}
-              className="bg-rosa hover:bg-red-700 px-4 py-2 rounded-lg transition-colors border border-[#ff01eb]/50 text-sm"
+              className="cursor-pointer bg-rosa hover:bg-red-700 px-4 py-2 rounded-lg transition-colors border border-[#ff01eb]/50 text-sm"
             >
               Cerrar Sesión
             </button>
@@ -117,7 +117,7 @@ export default function Navbar() {
             <Link href="/login" className="text-lg font-bold font-heading hover:text-rosa-hover transition-colors">
               🔑 Iniciar Sesión
             </Link>
-            <Link href="/registro" className="bg-rosa text-white px-4 py-2 rounded-lg font-bold hover:bg-[#d600c4] transition-colors shadow-lg shadow-[#ff01eb]/30">
+            <Link href="/registro" className="cursor-pointer bg-rosa text-white px-4 py-2 rounded-lg font-bold hover:bg-[#d600c4] transition-colors shadow-lg shadow-[#ff01eb]/30">
               Registrarse
             </Link>
           </div>

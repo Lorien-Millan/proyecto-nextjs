@@ -38,13 +38,13 @@ export default async function JuegosPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 py-12">
+    <main className="bg-gradient-to-r from-verde to-rosa min-h-screen bg-gray-50 py-12">
       <div className="container mx-auto px-4 max-w-7xl">
         
         {/* 🔝 Header de la página */}
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4">
           <div>
-            <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900">
+            <h1 className="text-4xl md:text-4xl font-heading text-gray-900">
               🎮 Catálogo Completo
             </h1>
             <p className="text-gray-600 mt-2">
@@ -119,7 +119,7 @@ export default async function JuegosPage() {
                           <span className="text-sm text-gray-400 line-through mb-1">
                             {prod.precio_original.toFixed(2)}€
                           </span>
-                          <span className="text-xl font-extrabold text-rosa">
+                          <span className="text-xl font-extrabold text-red-600">
                             {prod.precio.toFixed(2)}€
                           </span>
                         </>

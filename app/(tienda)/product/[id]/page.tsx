@@ -92,7 +92,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 py-12">
+    <main className="bg-gray-50 min-h-screen bg-gray-50 py-12">
       <div className="container mx-auto px-4 max-w-7xl">
         {/* 🔙 Botón Volver */}
         <Link href="/" className="inline-flex items-center text-gray-500 hover:text-rosa transition-colors font-medium mb-8">

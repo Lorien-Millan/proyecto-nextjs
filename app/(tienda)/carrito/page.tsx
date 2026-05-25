@@ -48,7 +48,7 @@ export default function CarritoPage() {
       }));
 
       // Llamada a la API
-      const res = await fetch('/api/pedido/crear', {
+      const res = await fetch('/api/pedido/crear', {                  //El frontend llama al POST cuando el usuario pulsa "Finalizar Compra"
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -160,7 +160,7 @@ export default function CarritoPage() {
                     <div className="text-black flex items-center gap-3">
                       <button
                         onClick={() => actualizarCantidad(producto.id_producto, producto.cantidad - 1)}
-                        className="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center font-bold text-gray-700 transition-colors"
+                        className="cursor-pointer w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center font-bold text-gray-700 transition-colors"
                       >
                         -
                       </button>
@@ -170,7 +170,7 @@ export default function CarritoPage() {
                       <button
                         onClick={() => actualizarCantidad(producto.id_producto, producto.cantidad + 1)}
                         disabled={producto.cantidad >= producto.stock}
-                        className="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center font-bold text-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="cursor-pointer w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center font-bold text-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         +
                       </button>
@@ -179,7 +179,7 @@ export default function CarritoPage() {
                     {/* Botón eliminar */}
                     <button
                       onClick={() => eliminarDelCarrito(producto.id_producto)}
-                      className="text-red-500 hover:text-red-700 font-semibold text-sm transition-colors"
+                      className="cursor-pointer text-red-500 hover:text-red-700 font-semibold text-sm transition-colors"
                     >
                       Eliminar
                     </button>
@@ -191,7 +191,7 @@ export default function CarritoPage() {
             {/* Botón vaciar carrito */}
             <button
               onClick={vaciarCarrito}
-              className="text-gray-500 hover:text-gray-700 font-semibold text-sm underline"
+              className="cursor-pointer text-gray-500 hover:text-gray-700 font-semibold text-sm underline"
             >
               Vaciar carrito
             </button>
@@ -227,7 +227,7 @@ export default function CarritoPage() {
               <button
                 onClick={handleFinalizarCompra}
                 disabled={isProcessing}
-                className="w-full bg-rosa text-white py-4 rounded-xl font-bold font-heading text-2xl shadow-lg hover:bg-rosa-hover transition-all mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="cursor-pointer w-full bg-rosa text-white py-4 rounded-xl font-bold font-heading text-2xl shadow-lg hover:bg-rosa-hover transition-all mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isProcessing ? 'Procesando...' : 'Finalizar Compra'}
               </button>

@@ -58,8 +58,8 @@ export default async function CategoryPage({ params }: { params: Promise<{ id: s
       categoria:categoria(nombre)
     `)
     .eq('id_categoria', parseInt(id))
-    // .gt('stock', 0)  <-- He comentado esto para que veas todos, 
-                        //    quita las barras y el texto para volver a filtrar solo stock > 0
+    // .gt('stock', 0)  <-- Esto esta comentado para que se vean todos, 
+                        //    descomentar y quitar texto para filtrar productos con stock mayor que cero.
     .order('titulo', { ascending: true });
 
   if (errorProductos) {
@@ -101,7 +101,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ id: s
       {/* 🟩 GRID DE PRODUCTOS */}
       <section className="container mx-auto px-4 py-16">
         <div className="flex items-center justify-between mb-10">
-          <h2 className="text-3xl font-bold text-gray-800">Juegos disponibles</h2>
+          <h2 className="text-5xl font-heading text-gray-800">Juegos disponibles</h2>
           <span className="bg-rosa/10 text-rosa px-5 py-2 rounded-full text-sm font-semibold shadow-sm">
             {productos?.length || 0} {productos?.length === 1 ? 'juego' : 'juegos'}
           </span>

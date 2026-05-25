@@ -84,11 +84,13 @@ export default async function Home() {
       </div>
 
       {/* Enlace a todos los juegos */}
-      <section className="container mx-auto px-4 py-8 text-center">
-        <Link href="/juegos" className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
-          Ver todos los productos
-        </Link>
-      </section>
+      <div className='bg-gradient-to-r from-verde to-rosa'>
+        <section className="container mx-auto px-4 py-8 text-center">
+          <Link href="/juegos" className="inline-block bg-verde text-black px-6 py-3 rounded-lg hover:bg-verde-hover transition-colors">
+            Ver todos los productos
+          </Link>
+        </section>
+      </div>
     </main>
   );
 }

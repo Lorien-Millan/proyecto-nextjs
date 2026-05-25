@@ -51,7 +51,7 @@ export default function LoginPage() {
     }
   };
 
-  // 🔹 NUEVO: Función para login con Google
+  // Función para login con Google
   const handleGoogleAuth = async () => {
     setError(null);
     setLoading(true);
@@ -61,7 +61,7 @@ export default function LoginPage() {
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
       );
-
+                                                                                //AQUI SE CONECTA CON EL PROVIDER DE GOOGLE
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
@@ -86,7 +86,7 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-verde/20 to-rosa/20 py-12 flex items-center justify-center px-4">
+    <main className="min-h-screen bg-gradient-to-r from-verde to-rosa py-12 flex items-center justify-center px-4">
       <div className="max-w-md w-full">
         {/* Tarjeta de login */}
         <div className="bg-white rounded-2xl shadow-2xl p-8 border-t-4 " style={{ borderColor: 'var(--color-rosa-principal)' }} >
